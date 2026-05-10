@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart Fix System — The Future of Smart Maintenance</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0d1420;
+    --surface2: #111927;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --card: rgba(13,20,32,0.85);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; line-height: 1.6; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.35; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 4rem; background: rgba(8,12,20,0.75); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); animation: slideDown 0.8s ease forwards; }
+  @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .nav-logo { display: flex; align-items: center; gap: 0.75rem; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; letter-spacing: 0.05em; color: var(--text); text-decoration: none; }
+  .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 0 20px rgba(0,212,255,0.35); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.03em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; letter-spacing: 0.04em; transition: opacity 0.2s, transform 0.2s; text-decoration: none; }
+  .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 900px; height: 700px; background: radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, rgba(124,58,237,0.06) 50%, transparent 70%); pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; opacity: 0.18; }
+  .blob-1 { width: 600px; height: 600px; background: var(--accent2); top: -20%; left: -15%; }
+  .blob-2 { width: 500px; height: 500px; background: var(--accent); bottom: -10%; right: -10%; }
+  .blob-3 { width: 300px; height: 300px; background: var(--accent3); top: 40%; left: 60%; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1.1rem; background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.25); border-radius: 99px; font-size: 0.78rem; font-weight: 500; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; animation: fadeUp 0.8s 0.2s ease both; }
+  .hero-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 10vw, 9rem); line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 0.5rem; animation: fadeUp 0.9s 0.35s ease both; }
+  .gradient-text { background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { max-width: 620px; font-size: 1.15rem; color: var(--muted); margin: 1.5rem auto 2.5rem; font-weight: 300; line-height: 1.7; animation: fadeUp 1s 0.5s ease both; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 1s 0.65s ease both; }
+  .btn-primary { padding: 0.9rem 2.2rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; letter-spacing: 0.03em; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; box-shadow: 0 0 40px rgba(0,212,255,0.2); display: inline-block; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(0,212,255,0.35); }
+  .btn-ghost { padding: 0.9rem 2.2rem; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 12px; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; letter-spacing: 0.03em; transition: border-color 0.2s, background 0.2s; text-decoration: none; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .stats-row { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 4rem; animation: fadeUp 1s 0.8s ease both; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+  .stat-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.25rem; }
+
+  /* SECTIONS */
+  section { padding: 7rem 4rem; position: relative; }
+  .section-label { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.25rem; }
+  .section-desc { max-width: 550px; color: var(--muted); font-size: 1rem; line-height: 1.75; }
+  .glow-sep { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent); opacity: 0.4; }
+
+  /* PROBLEM */
+  .problem-section { background: var(--surface); }
+  .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .problem-card { background: var(--card); border: 1px solid rgba(239,68,68,0.15); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; transition: transform 0.3s, border-color 0.3s; }
+  .problem-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #ef4444, #f97316); border-radius: 3px 3px 0 0; }
+  .problem-card:hover { transform: translateY(-4px); border-color: rgba(239,68,68,0.35); }
+  .problem-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .problem-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.6rem; color: #f87171; }
+  .problem-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+  /* FEATURES */
+  .features-header { text-align: center; margin-bottom: 4rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2.25rem; position: relative; overflow: hidden; transition: transform 0.3s, border-color 0.3s; }
+  .feature-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 0% 0%, rgba(0,212,255,0.05), transparent 60%); opacity: 0; transition: opacity 0.4s; }
+  .feature-card:hover { transform: translateY(-5px); border-color: rgba(0,212,255,0.25); }
+  .feature-card:hover::after { opacity: 1; }
+  .feature-card.purple::after { background: radial-gradient(circle at 0% 0%, rgba(124,58,237,0.07), transparent 60%); }
+  .feature-card.purple:hover { border-color: rgba(124,58,237,0.3); }
+  .feature-card.amber::after { background: radial-gradient(circle at 0% 0%, rgba(245,158,11,0.07), transparent 60%); }
+  .feature-card.amber:hover { border-color: rgba(245,158,11,0.3); }
+  .feature-number { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.15em; margin-bottom: 1.25rem; }
+  .feature-emoji { font-size: 2.4rem; margin-bottom: 1.2rem; display: block; filter: drop-shadow(0 0 12px rgba(0,212,255,0.3)); }
+  .feature-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--text); }
+  .feature-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .feature-tag { display: inline-block; margin-top: 1.25rem; padding: 0.25rem 0.75rem; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); border-radius: 99px; font-size: 0.7rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; }
+  .feature-tag.purple { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.2); color: #a78bfa; }
+  .feature-tag.amber { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); color: var(--accent3); }
+  .feature-tag.red { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); color: #f87171; }
+  .feature-tag.green { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.2); color: #4ade80; }
+
+  /* TECH */
+  .tech-section { background: var(--surface); overflow: hidden; }
+  .tech-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .tech-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; }
+  .tech-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; transition: border-color 0.3s, transform 0.3s; }
+  .tech-item:hover { border-color: rgba(0,212,255,0.3); transform: scale(1.02); }
+  .tech-item-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
+  .tech-item h4 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+  .tech-item p { font-size: 0.75rem; color: var(--muted); }
+  .tech-visual { position: relative; height: 420px; display: flex; align-items: center; justify-content: center; }
+  .orbit-container { position: relative; width: 320px; height: 320px; }
+  .orbit-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 0 60px rgba(0,212,255,0.4); z-index: 2; animation: breathe 3s ease-in-out infinite; }
+  @keyframes breathe { 0%, 100% { box-shadow: 0 0 60px rgba(0,212,255,0.4); } 50% { box-shadow: 0 0 100px rgba(124,58,237,0.5); } }
+  .orbit-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid rgba(0,212,255,0.15); border-radius: 50%; animation: spin linear infinite; }
+  .orbit-ring-1 { width: 180px; height: 180px; animation-duration: 8s; }
+  .orbit-ring-2 { width: 280px; height: 280px; animation-duration: 14s; animation-direction: reverse; }
+  .orbit-ring-3 { width: 360px; height: 360px; animation-duration: 20s; border-color: rgba(124,58,237,0.1); }
+  @keyframes spin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+  .orbit-dot { position: absolute; width: 36px; height: 36px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+  .orbit-ring-1 .orbit-dot { top: -18px; left: calc(50% - 18px); }
+  .orbit-ring-2 .orbit-dot:nth-child(1) { top: -18px; left: calc(50% - 18px); }
+  .orbit-ring-2 .orbit-dot:nth-child(2) { bottom: -18px; left: calc(50% - 18px); }
+
+  /* WORKFLOW */
+  .workflow-section { background: var(--surface2); }
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 3.5rem; position: relative; max-width: 700px; margin-left: auto; margin-right: auto; }
+  .steps::before { content: ''; position: absolute; left: 27px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent); border-radius: 2px; }
+  .step { display: flex; gap: 2rem; padding: 1.75rem 0; position: relative; }
+  .step-num { width: 56px; height: 56px; min-width: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: #fff; letter-spacing: 0.05em; box-shadow: 0 0 25px rgba(0,212,255,0.3); z-index: 1; }
+  .step-content h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--text); padding-top: 0.75rem; }
+  .step-content p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+  /* MARQUEE */
+  .marquee-section { padding: 2.5rem 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); }
+  .marquee-track { display: flex; gap: 3rem; animation: marquee 20s linear infinite; width: max-content; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; white-space: nowrap; }
+  .marquee-item .mi { font-size: 1rem; }
+
+  /* TEAM */
+  .team-section { text-align: center; }
+  .supervisors-grid, .developers-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 3rem; }
+  .person-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2rem 2.5rem; min-width: 260px; max-width: 320px; flex: 1; text-align: center; transition: transform 0.3s, border-color 0.3s; position: relative; overflow: hidden; }
+  .person-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px 3px 0 0; opacity: 0; transition: opacity 0.3s; }
+  .person-card:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.2); }
+  .person-card:hover::before { opacity: 1; }
+  .person-avatar { width: 68px; height: 68px; border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; letter-spacing: 0.05em; }
+  .person-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; color: var(--text); }
+  .person-card .role { font-size: 0.78rem; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .person-card .id { font-size: 0.75rem; color: var(--muted); margin-top: 0.35rem; }
+  .team-divider { display: flex; align-items: center; gap: 1rem; margin: 3.5rem 0 2rem; color: var(--muted); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .team-divider::before, .team-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* CTA */
+  .cta-section { padding: 7rem 4rem; text-align: center; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(124,58,237,0.12), transparent 70%); pointer-events: none; }
+  .cta-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 6rem); line-height: 1; margin-bottom: 1rem; }
+  .cta-section p { color: var(--muted); max-width: 500px; margin: 0 auto 2.5rem; font-size: 1rem; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); background: var(--surface); padding: 4rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .footer-desc { font-size: 0.85rem; color: var(--muted); max-width: 420px; line-height: 1.65; }
+  .footer-tags { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+  .footer-tag { padding: 0.3rem 0.9rem; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 99px; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+  .footer-copy { font-size: 0.75rem; color: var(--muted); opacity: 0.5; }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .tech-inner { grid-template-columns: 1fr; }
+    .tech-visual { height: 280px; }
+    footer { padding: 3rem 1.5rem; }
+    .cta-section { padding: 5rem 1.5rem; }
+  }
+  @media (max-width: 600px) {
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .stats-row { gap: 2rem; }
+    .tech-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">&#9889;</div>
+    Smart Fix System
+  </a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#workflow">How It Works</a></li>
+    <li><a href="#tech">Technology</a></li>
+    <li><a href="#team">Team</a></li>
+  </ul>
+  <a href="#features" class="nav-cta">Explore Features &rarr;</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    AI-Powered Maintenance Platform
+  </div>
+
+  <h1>
+    SMART<br>
+    <span class="gradient-text">FIX</span><br>
+    SYSTEM
+  </h1>
+
+  <p class="hero-sub">
+    The future of smart maintenance management — automating dispatch, detecting fraud, generating professional reports, and closing the loop with customers, all in real-time.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#features" class="btn-primary">Discover Features</a>
+    <a href="#team" class="btn-ghost">Meet the Team</a>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Automated Operations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Core AI Modules</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Manual Dispatching</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Fraud Detection</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="mi">&#128995;</span> Flutter &amp; Dart</div>
+    <div class="marquee-item"><span class="mi">&#128293;</span> Firebase Firestore</div>
+    <div class="marquee-item"><span class="mi">&#129504;</span> Google Gemini AI</div>
+    <div class="marquee-item"><span class="mi">&#128506;</span> Google Maps APIs</div>
+    <div class="marquee-item"><span class="mi">&#128196;</span> PDF Generation</div>
+    
+    <div class="marquee-item"><span class="mi">&#128737;</span> Fraud Detection Engine</div>
+    <div class="marquee-item"><span class="mi">&#128225;</span> Smart Dispatch Algorithm</div>
+    <div class="marquee-item"><span class="mi">&#128995;</span> Flutter &amp; Dart</div>
+    <div class="marquee-item"><span class="mi">&#128293;</span> Firebase Firestore</div>
+    <div class="marquee-item"><span class="mi">&#129504;</span> Google Gemini AI</div>
+    <div class="marquee-item"><span class="mi">&#128506;</span> Google Maps APIs</div>
+    <div class="marquee-item"><span class="mi">&#128196;</span> PDF Generation</div>
+    
+    <div class="marquee-item"><span class="mi">&#128737;</span> Fraud Detection Engine</div>
+    <div class="marquee-item"><span class="mi">&#128225;</span> Smart Dispatch Algorithm</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem-section" id="problem">
+  <div class="section-label reveal">&#9888;&#65039; The Problem</div>
+  <div class="section-title reveal reveal-delay-1">Traditional Maintenance<br>Companies Are Broken</div>
+  <div class="section-desc reveal reveal-delay-2">Administrative chaos plagues the industry — lost customers, wasted time, and zero accountability. We identified four critical failure points.</div>
+
+  <div class="problem-grid">
+    <div class="problem-card reveal reveal-delay-1">
+      <div class="problem-icon">&#128233;</div>
+      <h3>Request Chaos</h3>
+      <p>Customer requests arrive via random, unorganized WhatsApp messages that are nearly impossible to track, document, or prioritize effectively.</p>
+    </div>
+    <div class="problem-card reveal reveal-delay-2">
+      <div class="problem-icon">&#127922;</div>
+      <h3>Random Dispatching</h3>
+      <p>Technicians are sent to locations without any consideration of distance or current workload, causing severe and avoidable response delays.</p>
+    </div>
+    <div class="problem-card reveal reveal-delay-3">
+      <div class="problem-icon">&#128065;</div>
+      <h3>Lack of Oversight</h3>
+      <p>Technicians can manipulate their working hours — fake timestamps, unjustified pauses — while management has no reliable way to track real performance.</p>
+    </div>
+    <div class="problem-card reveal reveal-delay-4">
+      <div class="problem-icon">&#128221;</div>
+      <h3>Unprofessional Reports</h3>
+      <p>Informal, poorly written maintenance notes damage the company's professional image and undermine customer trust at the final billing stage.</p>
+    </div>
+  </div>
+</section>
+
+<div class="glow-sep"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="features-header">
+    <div class="section-label reveal">&#10024; Core Features</div>
+    <div class="section-title reveal reveal-delay-1">Not Just an App —<br>An Automated Operations Manager</div>
+    <p class="section-desc reveal reveal-delay-2" style="margin: 0 auto;">Six intelligent modules working in concert to eliminate inefficiency, prevent fraud, and deliver a flawless customer experience.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-number">01</div>
+      <span class="feature-emoji">&#129504;</span>
+      <h3>AI Magic Extract</h3>
+      <p>Paste any raw WhatsApp message from a customer and our Gemini-powered AI instantly extracts the name, issue, and address — converting it into an official tracked task in under one second.</p>
+      <span class="feature-tag">Gemini AI &middot; NLP</span>
+    </div>
+
+    <div class="feature-card purple reveal reveal-delay-2">
+      <div class="feature-number">02</div>
+      <span class="feature-emoji">&#128225;</span>
+      <h3>Smart Dispatch &amp; Routing</h3>
+      <p>An intelligent algorithm calculates precise geographical distances and analyzes each technician's real-time workload — automatically assigning every task to the closest and most available technician.</p>
+      <span class="feature-tag purple">Geolocation &middot; Smart Routing</span>
+    </div>
+
+    <div class="feature-card amber reveal reveal-delay-3">
+      <div class="feature-number">03</div>
+      <span class="feature-emoji">&#128065;&#65039;</span>
+      <h3>Live Operations Radar</h3>
+      <p>An interactive Kanban board paired with an emergency radar detects delays, interruptions, and critical issues as they emerge — giving management complete situational awareness in real-time.</p>
+      <span class="feature-tag amber">Real-Time &middot; Kanban</span>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-number">04</div>
+      <span class="feature-emoji">&#128737;&#65039;</span>
+      <h3>Smart SLA &amp; Fraud Detection</h3>
+      <p>An advanced engine monitors technicians' time, prevents Fake GPS apps from spoofing location, and automatically issues Red Flags and financial deductions for time manipulation or unjustified pauses without photographic evidence.</p>
+      <span class="feature-tag red">Anti-Fraud &middot; SLA Engine</span>
+    </div>
+
+    <div class="feature-card purple reveal reveal-delay-2">
+      <div class="feature-number">05</div>
+      <span class="feature-emoji">&#129668;</span>
+      <h3>AI Formal Reports</h3>
+      <p>Technicians' informal written or voice notes are automatically transformed into polished, highly professional engineering reports — ready to be included in the customer's final invoice.</p>
+      <span class="feature-tag purple">Voice-to-Text &middot; AI Writing</span>
+    </div>
+
+    <div class="feature-card amber reveal reveal-delay-3">
+      <div class="feature-number">06</div>
+      <span class="feature-emoji">&#129534;</span>
+      <h3>Digital Invoicing &amp; WhatsApp</h3>
+      <p>Generate professional PDF invoices with a verified digital customer signature and instantly dispatch them — along with a satisfaction rating link — directly to the customer via WhatsApp in a single tap.</p>
+      <span class="feature-tag green">PDF &middot; WhatsApp &middot; E-Signature</span>
+    </div>
+  </div>
+</section>
+
+<div class="glow-sep"></div>
+
+<!-- WORKFLOW -->
+<section class="workflow-section" id="workflow">
+  <div style="text-align:center">
+    <div class="section-label reveal">&#128260; Workflow</div>
+    <div class="section-title reveal reveal-delay-1">From Request to Invoice<br>in Minutes</div>
+    <p class="section-desc reveal reveal-delay-2" style="margin: 0 auto;">A seamless, fully automated pipeline that handles every stage of the maintenance lifecycle without manual intervention.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Customer Sends WhatsApp Message</h3>
+        <p>A customer describes their issue in natural language via WhatsApp — no forms, no portals, no friction.</p>
+      </div>
+    </div>
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>AI Extracts &amp; Creates Task</h3>
+        <p>Gemini AI parses the message, extracts the name, issue, and location, and instantly creates a tracked task in the system.</p>
+      </div>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Smart Dispatch Assigns Technician</h3>
+        <p>The routing algorithm selects the optimal technician based on proximity and current workload, then auto-assigns the job.</p>
+      </div>
+    </div>
+    <div class="step reveal reveal-delay-3">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Live Monitoring &amp; Fraud Detection</h3>
+        <p>The operations radar tracks progress in real-time while the SLA engine monitors time integrity and flags any anomalies.</p>
+      </div>
+    </div>
+    <div class="step reveal reveal-delay-4">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>AI Generates Professional Report</h3>
+        <p>The technician's field notes are converted into a formal engineering report, automatically appended to the job record.</p>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <h3>Invoice Sent &amp; Rating Collected</h3>
+        <p>A signed PDF invoice is generated and sent via WhatsApp with a rating link — closing the loop professionally and instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="tech-section" id="tech">
+  <div class="tech-inner">
+    <div>
+      <div class="section-label reveal">&#128187; Technologies</div>
+      <div class="section-title reveal reveal-delay-1">Built with<br>State-of-the-Art Stack</div>
+      <p class="section-desc reveal reveal-delay-2">Every component is selected for maximum speed, security, and intelligence — forming a cohesive, scalable architecture.</p>
+
+      <div class="tech-list">
+        <div class="tech-item reveal reveal-delay-1">
+          <div class="tech-item-icon">&#128995;</div>
+          <h4>Flutter &amp; Dart</h4>
+          <p>Mobile apps &amp; web dashboard</p>
+        </div>
+        <div class="tech-item reveal reveal-delay-2">
+          <div class="tech-item-icon">&#128293;</div>
+          <h4>Firebase</h4>
+          <p>Firestore, Storage &amp; Auth</p>
+        </div>
+        <div class="tech-item reveal reveal-delay-3">
+          <div class="tech-item-icon">&#129504;</div>
+          <h4>Gemini AI</h4>
+          <p>NLP, extraction &amp; reports</p>
+        </div>
+        <div class="tech-item reveal reveal-delay-4">
+          <div class="tech-item-icon">&#128506;</div>
+          <h4>Google Maps</h4>
+          <p>Geolocation &amp; routing</p>
+        </div>
+        <div class="tech-item reveal reveal-delay-1">
+          <div class="tech-item-icon">&#128196;</div>
+          <h4>PDF Engine</h4>
+          <p>Programmatic documents</p>
+        </div>
+       
+      </div>
+    </div>
+
+    <div class="tech-visual reveal">
+      <div class="orbit-container">
+        <div class="orbit-ring orbit-ring-3">
+          <div class="orbit-dot">&#128506;</div>
+        </div>
+        <div class="orbit-ring orbit-ring-2">
+          <div class="orbit-dot">&#128293;</div>
+          <div class="orbit-dot">&#128172;</div>
+        </div>
+        <div class="orbit-ring orbit-ring-1">
+          <div class="orbit-dot">&#128995;</div>
+        </div>
+        <div class="orbit-center">&#129504;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="glow-sep"></div>
+
+<!-- TEAM -->
+<section class="team-section" id="team">
+  <div class="section-label reveal">&#127891; Academic Project</div>
+  <div class="section-title reveal reveal-delay-1">Supervised By<br>Distinguished Faculty</div>
+  <p class="section-desc reveal reveal-delay-2" style="margin: 0 auto;">This project was completed as part of academic requirements under the guidance of esteemed faculty members.</p>
+
+  <div class="supervisors-grid">
+    <div class="person-card reveal reveal-delay-1">
+      <div class="person-avatar">YS</div>
+      <h3>Dr. Yaqoob Salman Mohamed Alslais</h3>
+      <div class="role">First Supervisor</div>
+      <div class="id">Information Systems &middot; IS</div>
+    </div>
+    <div class="person-card reveal reveal-delay-2">
+      <div class="person-avatar">AF</div>
+      <h3>Dr. Ahmed Yousif Ahmed Fahad</h3>
+      <div class="role">Second Supervisor</div>
+      <div class="id">Computer Science &middot; CS</div>
+    </div>
+  </div>
+
+  <div class="team-divider reveal">
+    <span>Developed By</span>
+  </div>
+
+  <div class="developers-grid">
+    <div class="person-card reveal reveal-delay-1">
+      <div class="person-avatar">HJ</div>
+      <h3>Hussain Saeed Jaafar</h3>
+      <div class="role">Developer</div>
+      <div class="id">Student ID: 202208648</div>
+    </div>
+    <div class="person-card reveal reveal-delay-2">
+      <div class="person-avatar">SH</div>
+      <h3>Sayed Hashem Alhussaini</h3>
+      <div class="role">Developer</div>
+      <div class="id">Student ID: 202100638</div>
+    </div>
+    <div class="person-card reveal reveal-delay-3">
+      <div class="person-avatar">AN</div>
+      <h3>Ali Nedhal Ateya</h3>
+      <div class="role">Developer</div>
+      <div class="id">Student ID: 202205899</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label reveal">&#128640; Ready</div>
+  <h2 class="reveal reveal-delay-1">
+    THE FUTURE OF<br>
+    <span class="gradient-text">MAINTENANCE</span><br>
+    IS HERE
+  </h2>
+  <p class="reveal reveal-delay-2">Smart Fix System eliminates the chaos, automates the workflow, and delivers professionalism at every touchpoint — from first message to final invoice.</p>
+  <div class="reveal reveal-delay-3">
+    <a href="#features" class="btn-primary" style="font-size: 1rem; padding: 1rem 2.8rem;">Explore the System &rarr;</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SMART FIX SYSTEM</div>
+  <p class="footer-desc">An AI-powered maintenance management platform built with Flutter, Firebase, and Google Gemini — transforming how service companies operate.</p>
+  <div class="footer-tags">
+    <span class="footer-tag">Flutter</span>
+    <span class="footer-tag">Firebase</span>
+    <span class="footer-tag">Gemini AI</span>
+    <span class="footer-tag">Google Maps</span>
+   
+    <span class="footer-tag">PDF Engine</span>
+  </div>
+  <div class="footer-copy">&#169; 2025 Smart Fix System &mdash; Academic Final Year Project</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Mouse parallax blobs
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    document.querySelectorAll('.blob').forEach((b, i) => {
+      const f = (i + 1) * 0.4;
+      b.style.transform = `translate(${x * f}px, ${y * f}px)`;
+    });
+  });
+
+  // Nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
